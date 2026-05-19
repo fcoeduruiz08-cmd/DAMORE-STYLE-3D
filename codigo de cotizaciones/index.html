@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAMORE STYLE</title>
+
+<style>
+
+:root{
+    --azul:#0057D9;
+    --negro:#111111;
+    --blanco:#FFFFFF;
+    --gris:#f3f4f6;
+}
+
+body{
+    margin:0;
+    padding:25px;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,var(--azul),var(--negro));
+}
+
+.container{
+    max-width:950px;
+    margin:auto;
+    background:var(--blanco);
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 0 25px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    color:var(--azul);
+    margin-bottom:30px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+    color:var(--negro);
+}
+
+input,select{
+    width:100%;
+    padding:13px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.checkbox{
+    margin-top:15px;
+}
+
+.checkbox label{
+    display:inline;
+    margin-left:8px;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btn-calcular{
+    background:var(--azul);
+    color:white;
+}
+
+.btn-calcular:hover{
+    opacity:0.9;
+}
+
+.btn-whatsapp{
+    background:#25D366;
+    color:white;
+}
+
+.btn-whatsapp:hover{
+    opacity:0.9;
+}
+
+.resultado{
+    margin-top:35px;
+    background:var(--gris);
+    padding:25px;
+    border-radius:15px;
+    display:none;
+}
+
+.resultado h2{
+    color:var(--azul);
+}
+
+.dato{
+    margin:12px 0;
+    font-size:17px;
+}
+
+.precio{
+    margin-top:25px;
+    font-size:34px;
+    color:#16a34a;
+    font-weight:bold;
+}
+
+.admin{
+    margin-top:25px;
+    padding:20px;
+    background:#e0ecff;
+    border-left:6px solid var(--azul);
+    border-radius:12px;
+}
+
+@media(max-width:700px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>DAMORE STYLE 3D</h1>
+
+<div class="grid">
+
+<div>
+<label>Nombre de la pieza</label>
+<input type="text" id="pieza" placeholder="Ej. Soporte motor">
+</div>
+
+<div>
+<label>Cliente</label>
+<input type="text" id="cliente" placeholder="Nombre cliente">
+</div>
+
+<div>
+<label>Peso (g)</label>
+<input type="number" id="peso">
+</div>
+
+<div>
+<label>Cantidad</label>
+<input type="number" id="cantidad" value="1">
+</div>
+
+<div>
+<label>Material</label>
+<select id="material">
+<option>PLA</option>
+<option>PETG</option>
+<option>TPU</option>
+<option>PA-CF</option>
+<option>ABS</option>
+<option>ASA</option>
+</select>
+</div>
+
+<div>
+<label>Impresora</label>
+<select id="impresora">
+<option>K2 Pro</option>
+<option>P1S</option>
+<option>K1 Max</option>
+</select>
+</div>
+
+<div>
+<label>Calidad</label>
+<select id="calidad">
+<option value="0.8">Borrador</option>
+<option value="1">Normal</option>
+<option value="1.4">Alta Calidad</option>
+</select>
+</div>
+
+<div>
+<label>Infill</label>
+<select id="infill">
+<option value="1">15%</option>
+<option value="1.2">30%</option>
+<option value="1.5">50%</option>
+<option value="2">100%</option>
+</select>
+</div>
+
+<div>
+<label>Multiplicador</label>
+<input type="number" id="multiplicador" value="4" step="0.1">
+</div>
+
+<div>
+<label>Precio mínimo</label>
+<input type="number" id="precioMinimo" value="80">
+</div>
+
+</div>
+
+<div class="checkbox">
+<input type="checkbox" id="urgente">
+<label>Trabajo urgente (+35%)</label>
+</div>
+
+<div class="checkbox">
+<input type="checkbox" id="postproceso">
+<label>Postproceso (+15%)</label>
+</div>
+
+<button class="btn-calcular" onclick="cotizar()">Calcular Cotización</button>
+
+<div class="resultado" id="resultado">
+
+<h2>Resultado</h2>
+
+<div class="dato" id="r1"></div>
+<div class="dato" id="r2"></div>
+<div class="dato" id="r3"></div>
+<div class="dato" id="r4"></div>
+<div class="dato" id="r5"></div>
+<div class="dato" id="r6"></div>
+<div class="dato" id="r7"></div>
+<div class="dato" id="r8"></div>
+<div class="dato" id="r9"></div>
+<div class="dato" id="r10"></div>
+
+<div class="precio" id="precioFinal"></div>
+
+<button class="btn-whatsapp" onclick="enviarWhatsApp()">
+Enviar cotización por WhatsApp
+</button>
+
+<div class="admin">
+<h3>Panel administrativo</h3>
+<div class="dato" id="ganancia"></div>
+<div class="dato" id="costoReal"></div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let mensajeWhatsApp = "";
+
+function cotizar(){
+
+const precios = {
+    "PLA":300,
+    "PETG":300,
+    "TPU":500,
+    "PA-CF":1300,
+    "ABS":400,
+    "ASA":700
+};
+
+const velocidad = {
+    "PLA":0.025,
+    "PETG":0.03,
+    "TPU":0.045,
+    "PA-CF":0.05,
+    "ABS":0.03,
+    "ASA":0.035
+};
+
+const premium = {
+    "PLA":1,
+    "PETG":1,
+    "TPU":1.2,
+    "PA-CF":1.5,
+    "ABS":1,
+    "ASA":1.3
+};
+
+const pieza = document.getElementById("pieza").value;
+const cliente = document.getElementById("cliente").value;
+const peso = parseFloat(document.getElementById("peso").value);
+const cantidad = parseInt(document.getElementById("cantidad").value);
+const material = document.getElementById("material").value;
+const impresora = document.getElementById("impresora").value;
+const calidad = parseFloat(document.getElementById("calidad").value);
+const infill = parseFloat(document.getElementById("infill").value);
+const multiplicador = parseFloat(document.getElementById("multiplicador").value);
+const urgente = document.getElementById("urgente").checked;
+const postproceso = document.getElementById("postproceso").checked;
+const precioMinimo = parseFloat(document.getElementById("precioMinimo").value);
+
+if(!peso || peso <= 0){
+    alert("Ingresa un peso válido");
+    return;
+}
+
+const costoMaterial = (peso/1000) * precios[material];
+
+let horas = peso * velocidad[material];
+horas *= calidad;
+horas *= infill;
+
+const costoLuz = horas * 2;
+const desgaste = horas * 3;
+
+let costoTotal = costoMaterial + costoLuz + desgaste;
+costoTotal *= premium[material];
+
+let precioVenta = costoTotal * multiplicador;
+
+if(urgente){
+    precioVenta *= 1.35;
+}
+
+if(postproceso){
+    precioVenta *= 1.15;
+}
+
+if(cantidad >= 10){
+    precioVenta *= 0.9;
+}
+
+if(cantidad >= 50){
+    precioVenta *= 0.8;
+}
+
+if(precioVenta < precioMinimo){
+    precioVenta = precioMinimo;
+}
+
+const total = precioVenta * cantidad;
+const ganancia = total - (costoTotal * cantidad);
+
+let entrega = "";
+
+if(horas < 6){
+    entrega = "1 día";
+}else if(horas < 20){
+    entrega = "2 días";
+}else{
+    entrega = "3 a 5 días";
+}
+
+
+document.getElementById("resultado").style.display = "block";
+
+document.getElementById("r1").innerHTML = `<strong>Pieza:</strong> ${pieza}`;
+document.getElementById("r2").innerHTML = `<strong>Cliente:</strong> ${cliente}`;
+document.getElementById("r3").innerHTML = `<strong>Material:</strong> ${material}`;
+document.getElementById("r4").innerHTML = `<strong>Impresora:</strong> ${impresora}`;
+document.getElementById("r5").innerHTML = `<strong>Peso:</strong> ${peso} g`;
+document.getElementById("r6").innerHTML = `<strong>Tiempo estimado:</strong> ${horas.toFixed(2)} horas`;
+document.getElementById("r7").innerHTML = `<strong>Costo material:</strong> $${costoMaterial.toFixed(2)}`;
+document.getElementById("r8").innerHTML = `<strong>Costo electricidad:</strong> $${costoLuz.toFixed(2)}`;
+document.getElementById("r9").innerHTML = `<strong>Entrega:</strong> ${entrega}`;
+document.getElementById("r10").innerHTML = `<strong>Cantidad:</strong> ${cantidad}`;
+
+document.getElementById("precioFinal").innerHTML = `PRECIO FINAL: $${total.toFixed(2)}`;
+
+document.getElementById("ganancia").innerHTML = `<strong>Ganancia estimada:</strong> $${ganancia.toFixed(2)}`;
+
+document.getElementById("costoReal").innerHTML = `<strong>Costo real:</strong> $${(costoTotal*cantidad).toFixed(2)}`;
+
+mensajeWhatsApp = `Hola Francisco,%0A%0ANueva cotización:%0A%0APieza: ${pieza}%0ACliente: ${cliente}%0AMaterial: ${material}%0APeso: ${peso}g%0ACantidad: ${cantidad}%0ATiempo estimado: ${horas.toFixed(2)} horas%0APrecio final: $${total.toFixed(2)}%0AEntrega: ${entrega}`;
+
+}
+
+function enviarWhatsApp(){
+
+const telefono = "528128868867";
+
+if(mensajeWhatsApp === ""){
+    alert("Primero calcula una cotización");
+    return;
+}
+
+window.open(`https://wa.me/${telefono}?text=${mensajeWhatsApp}`,'_blank');
+
+}
+
+</script>
+
+</body>
+</html>
