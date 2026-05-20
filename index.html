@@ -234,6 +234,8 @@ button{
 
 <h2>Resultado</h2>
 
+<div class="dato" id="folio"></div>
+
 <div class="dato" id="r1"></div>
 <div class="dato" id="r2"></div>
 <div class="dato" id="r3"></div>
@@ -264,6 +266,7 @@ Enviar cotización por WhatsApp
 <script>
 
 let mensajeWhatsApp = "";
+let folioCotizacion = "";
 
 function cotizar(){
 
@@ -347,6 +350,7 @@ if(precioVenta < precioMinimo){
 }
 
 const total = precioVenta * cantidad;
+folioCotizacion = "DM-" + Math.floor(Math.random() * 999999);
 const ganancia = total - (costoTotal * cantidad);
 
 let entrega = "";
@@ -361,6 +365,9 @@ if(horas < 6){
 
 
 document.getElementById("resultado").style.display = "block";
+
+document.getElementById("folio").innerHTML =
+`<strong>Folio:</strong> ${folioCotizacion}`;
 
 document.getElementById("r1").innerHTML = `<strong>Pieza:</strong> ${pieza}`;
 document.getElementById("r2").innerHTML = `<strong>Cliente:</strong> ${cliente}`;
@@ -379,10 +386,76 @@ document.getElementById("ganancia").innerHTML = `<strong>Ganancia estimada:</str
 
 document.getElementById("costoReal").innerHTML = `<strong>Costo real:</strong> $${(costoTotal*cantidad).toFixed(2)}`;
 
-mensajeWhatsApp = `Hola Francisco,%0A%0ANueva cotización:%0A%0APieza: ${pieza}%0ACliente: ${cliente}%0AMaterial: ${material}%0APeso: ${peso}g%0ACantidad: ${cantidad}%0ATiempo estimado: ${horas.toFixed(2)} horas%0APrecio final: $${total.toFixed(2)}%0AEntrega: ${entrega}`;
+mensajeWhatsApp = `✨ DAMORE STYLE 3D ✨
+
+📄 Cotización: ${folioCotizacion}
+
+👤 Cliente: ${cliente}
+
+🧩 Pieza: ${pieza}
+🧵 Material: ${material}
+⚖️ Peso: ${peso}g
+📦 Cantidad: ${cantidad}
+
+🕒 Tiempo estimado:
+${horas.toFixed(2)} horas
+
+🚚 Entrega:
+${entrega}
+
+💰 PRECIO FINAL:
+$${total.toFixed(2)} MXN
+
+Gracias por cotizar con DAMORE STYLE 3D`;
+
+guardarCotizacion(
+    folioCotizacion,
+    cliente,
+    pieza,
+    material,
+    peso,
+    cantidad,
+    total,
+    ganancia
+);
 
 }
+function guardarCotizacion(
+    folio,
+    cliente,
+    pieza,
+    material,
+    peso,
+    cantidad,
+    precio,
+    ganancia
+){
 
+fetch("https://script.google.com/macros/s/AKfycbygXy21CU58OClJeUz9TIQhxUKpvCjYmcX70b5nMokusMqCxVGysGdSjfqzV-ZYyt_2/exec", {
+
+    method:"POST",
+
+    body:JSON.stringify({
+        folio,
+        cliente,
+        pieza,
+        material,
+        peso,
+        cantidad,
+        precio,
+        ganancia
+    })
+
+})
+.then(res => res.json())
+.then(data => {
+    console.log("Cotización guardada");
+})
+.catch(err => {
+    console.log(err);
+});
+
+}
 function enviarWhatsApp(){
 
 const telefono = "528128868867";
@@ -392,7 +465,7 @@ if(mensajeWhatsApp === ""){
     return;
 }
 
-window.open(`https://wa.me/${telefono}?text=${mensajeWhatsApp}`,'_blank');
+window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensajeWhatsApp)}`,'_blank');
 
 }
 
